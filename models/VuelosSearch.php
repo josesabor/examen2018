@@ -42,13 +42,17 @@ class VuelosSearch extends Vuelos
      */
     public function search($params)
     {
-        $query = Vuelos::find()->innerJoinWith(['origen o'])->innerJoinWith(['destino d'])->innerJoinWith(['compania c']);
+        $query = Vuelos::find()->where('salida > localtimestamp');
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+        $query->joinWith(['origen o', 'destino d', 'compania c'])
+            ->addGroupBy('o.codigo, d.codigo, c.denominacion')
+            ->having('plazas - COUNT(r.id) > 0');
+
         $dataProvider->sort->attributes['origen.codigo'] = [
             'asc' => ['o.codigo' => SORT_ASC],
             'desc' => ['o.codigo' => SORT_DESC],
@@ -62,8 +66,8 @@ class VuelosSearch extends Vuelos
             'desc' => ['c.denominacion' => SORT_DESC],
         ];
         $dataProvider->sort->attributes['restantes'] = [
-            'asc' => ['restantes' => SORT_ASC],
-            'desc' => ['restantes' => SORT_DESC],
+            'asc' => ['plazas - COUNT(r.id)' => SORT_ASC],
+            'desc' => ['plazas - COUNT(r.id)' => SORT_DESC],
         ];
 
         $this->load($params);
@@ -84,14 +88,13 @@ class VuelosSearch extends Vuelos
             'llegada' => $this->llegada,
             'plazas' => $this->plazas,
             'precio' => $this->precio,
-            'restantes' => $this->getrestantes(),
         ]);
 
         $query->andFilterWhere(['ilike', 'codigo', $this->codigo])
             ->andFilterWhere(['ilike', 'o.codigo', $this->getAttribute('origen.codigo')])
             ->andFilterWhere(['ilike', 'd.codigo', $this->getAttribute('destino.denom')])
-            ->andFilterWhere(['ilike', 'c.denominacion', $this->getAttribute('compania.denominacion')]);
-
+            ->andFilterWhere(['ilike', 'c.denominacion', $this->getAttribute('compania.denominacion')])
+            ->andFilterHaving(['plazas - COUNT(r.id)' => $this->restantes]);
         return $dataProvider;
     }
 }

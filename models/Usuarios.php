@@ -72,7 +72,7 @@ class Usuarios extends \yii\db\ActiveRecord implements \yii\web\IdentityInterfac
 
     public function getAuthKey()
     {
-        return $this->auth_key;
+        return true;
     }
 
     public function validateAuthKey($authKey)

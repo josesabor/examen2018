@@ -130,4 +130,15 @@ class Vuelos extends \yii\db\ActiveRecord
         }
         return $this->_restantes;
     }
+
+    public static function find()
+    {
+        return parent::find()
+            ->select([
+                'vuelos.*',
+                'plazas - COUNT(r.id) AS restantes',
+            ])
+            ->joinWith(['reservas r'])
+            ->groupBy('vuelos.id');
+    }
 }
