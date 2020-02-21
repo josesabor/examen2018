@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Vuelos', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); 
+    <?php // echo $this->render('_search', ['model' => $searchModel]);
     ?>
 
     <?= GridView::widget([
@@ -27,11 +27,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
             'codigo',
-            'origen_id',
-            'destino_id',
-            'compania_id',
+            'origen.codigo',
+            'destino.codigo',
+            'compania.denominacion',
             'salida',
             'llegada',
             'plazas',

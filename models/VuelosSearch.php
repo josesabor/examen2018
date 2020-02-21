@@ -18,10 +18,11 @@ class VuelosSearch extends Vuelos
     {
         return [
             [['id', 'origen_id', 'destino_id', 'compania_id'], 'integer'],
-            [['codigo', 'salida', 'llegada'], 'safe'],
+            [['codigo', 'salida', 'llegada', 'origen.codigo', 'destino.codigo', 'compania.denominacion'], 'safe'],
             [['plazas', 'precio'], 'number'],
         ];
     }
+
 
     /**
      * {@inheritdoc}
@@ -41,13 +42,25 @@ class VuelosSearch extends Vuelos
      */
     public function search($params)
     {
-        $query = Vuelos::find();
+        $query = Vuelos::find()->innerJoinWith(['origen o'])->innerJoinWith(['destino d'])->innerJoinWith(['compania c']);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+        $dataProvider->sort->attributes['origen.codigo'] = [
+            'asc' => ['o.codigo' => SORT_ASC],
+            'desc' => ['o.codigo' => SORT_DESC],
+        ];
+        $dataProvider->sort->attributes['destino.codigo'] = [
+            'asc' => ['d.codigo' => SORT_ASC],
+            'desc' => ['d.codigo' => SORT_DESC],
+        ];
+        $dataProvider->sort->attributes['compania.denominacion'] = [
+            'asc' => ['c.denominacion' => SORT_ASC],
+            'desc' => ['c.denominacion' => SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -69,7 +82,10 @@ class VuelosSearch extends Vuelos
             'precio' => $this->precio,
         ]);
 
-        $query->andFilterWhere(['ilike', 'codigo', $this->codigo]);
+        $query->andFilterWhere(['ilike', 'codigo', $this->codigo])
+            ->andFilterWhere(['ilike', 'o.codigo', $this->getAttribute('origen.codigo')])
+            ->andFilterWhere(['ilike', 'd.codigo', $this->getAttribute('destino.denom')])
+            ->andFilterWhere(['ilike', 'c.denominacion', $this->getAttribute('compania.denominacion')]);
 
         return $dataProvider;
     }

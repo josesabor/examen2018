@@ -51,6 +51,11 @@ class Vuelos extends \yii\db\ActiveRecord
         ];
     }
 
+    public function attributes()
+    {
+        return array_merge(parent::attributes(), ['origen.codigo'], ['destino.codigo'], ['compania.denominacion']);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -66,6 +71,9 @@ class Vuelos extends \yii\db\ActiveRecord
             'llegada' => 'Llegada',
             'plazas' => 'Plazas',
             'precio' => 'Precio',
+            'origen.codigo' => 'Origen',
+            'destino.codigo' => 'Destino',
+            'compania.denominacion' => 'Compañia',
         ];
     }
 
