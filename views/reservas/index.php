@@ -30,6 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'vuelo.codigo',
                 'label' => 'Vuelo',
+                'format' => 'raw',
+                'value' => function ($model, $key, $index, $column) {
+                    return Html::a($model->vuelo->codigo, [
+                        'vuelos/view', 'id' => $model->vuelo_id
+                    ]);
+                },
             ],
 
             'asiento',
