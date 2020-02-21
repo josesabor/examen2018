@@ -24,6 +24,7 @@ use Yii;
  */
 class Vuelos extends \yii\db\ActiveRecord
 {
+    private $_restantes = null;
     /**
      * {@inheritdoc}
      */
@@ -115,5 +116,18 @@ class Vuelos extends \yii\db\ActiveRecord
     public function getCompania()
     {
         return $this->hasOne(Companias::className(), ['id' => 'compania_id']);
+    }
+
+    public function setrestantes($restantes)
+    {
+        $this->_restantes = $restantes;
+    }
+
+    public function getrestantes()
+    {
+        if ($this->_restantes === null && !$this->isNewRecord) {
+            $this->setrestantes($this->plazas - $this->getReservas()->count());
+        }
+        return $this->_restantes;
     }
 }

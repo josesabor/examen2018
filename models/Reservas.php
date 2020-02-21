@@ -37,12 +37,17 @@ class Reservas extends \yii\db\ActiveRecord
             [['usuario_id', 'vuelo_id'], 'integer'],
             [['asiento'], 'number'],
             [['fecha_hora'], 'safe'],
+            ['vuelo.codigo', 'unique'],
             [['vuelo_id', 'asiento'], 'unique', 'targetAttribute' => ['vuelo_id', 'asiento']],
             [['usuario_id'], 'exist', 'skipOnError' => true, 'targetClass' => Usuarios::className(), 'targetAttribute' => ['usuario_id' => 'id']],
             [['vuelo_id'], 'exist', 'skipOnError' => true, 'targetClass' => Vuelos::className(), 'targetAttribute' => ['vuelo_id' => 'id']],
         ];
     }
 
+    public function attributes()
+    {
+        return array_merge(parent::attributes(), ['vuelo.codigo']);
+    }
     /**
      * {@inheritdoc}
      */

@@ -19,7 +19,7 @@ class VuelosSearch extends Vuelos
         return [
             [['id', 'origen_id', 'destino_id', 'compania_id'], 'integer'],
             [['codigo', 'salida', 'llegada', 'origen.codigo', 'destino.codigo', 'compania.denominacion'], 'safe'],
-            [['plazas', 'precio'], 'number'],
+            [['plazas', 'precio', 'restantes'], 'number'],
         ];
     }
 
@@ -61,6 +61,10 @@ class VuelosSearch extends Vuelos
             'asc' => ['c.denominacion' => SORT_ASC],
             'desc' => ['c.denominacion' => SORT_DESC],
         ];
+        $dataProvider->sort->attributes['restantes'] = [
+            'asc' => ['restantes' => SORT_ASC],
+            'desc' => ['restantes' => SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -80,6 +84,7 @@ class VuelosSearch extends Vuelos
             'llegada' => $this->llegada,
             'plazas' => $this->plazas,
             'precio' => $this->precio,
+            'restantes' => $this->getrestantes(),
         ]);
 
         $query->andFilterWhere(['ilike', 'codigo', $this->codigo])

@@ -19,10 +19,9 @@ class ReservasSearch extends Reservas
         return [
             [['id', 'usuario_id', 'vuelo_id'], 'integer'],
             [['asiento'], 'number'],
-            [['created_at'], 'safe'],
+            [['created_at', 'vuelo.codigo'], 'safe'],
         ];
     }
-
     /**
      * {@inheritdoc}
      */
@@ -41,13 +40,18 @@ class ReservasSearch extends Reservas
      */
     public function search($params)
     {
-        $query = Reservas::find();
+        $query = Reservas::find()->innerJoinWith('vuelo v');
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+        $dataProvider->sort->attributes['vuelo.codigo'] = [
+            'asc' => ['vuelo.codigo' => SORT_ASC],
+            'desc' => ['vuelo.codigo' => SORT_DESC],
+        ];
+
 
         $this->load($params);
 
@@ -65,7 +69,7 @@ class ReservasSearch extends Reservas
             'asiento' => $this->asiento,
             'created_at' => $this->created_at,
         ]);
-
+        $query->andFilterWhere(['ilike', 'v.codigo', $this->getAttribute('vuelo.codigo')]);
         return $dataProvider;
     }
 }

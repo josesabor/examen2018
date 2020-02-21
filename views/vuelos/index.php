@@ -34,8 +34,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'salida',
             'llegada',
             'plazas',
+            'restantes',
             'precio',
-
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>

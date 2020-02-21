@@ -27,16 +27,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'usuario_id',
             [
-                'attribute' => 'vuelo_id',
+                'attribute' => 'vuelo.codigo',
                 'label' => 'Vuelo',
-                'format' => 'raw',
-                'value' => function ($data) {
-
-                    return Html::a($data['vuelo_id'], ['vuelos/view', 'id' => $data['vuelo_id']]);
-                },
             ],
 
             'asiento',

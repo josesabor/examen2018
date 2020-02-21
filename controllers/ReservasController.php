@@ -39,6 +39,7 @@ class ReservasController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'usuario_id' => Yii::$app->user->id,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -53,6 +54,7 @@ class ReservasController extends Controller
     public function actionView($id)
     {
         return $this->render('view', [
+            'usuario_id' => Yii::$app->user->id,
             'model' => $this->findModel($id),
         ]);
     }
@@ -71,6 +73,7 @@ class ReservasController extends Controller
         }
 
         return $this->render('create', [
+            'usuario_id' => Yii::$app->user->id,
             'model' => $model,
         ]);
     }
