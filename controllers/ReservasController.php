@@ -5,6 +5,8 @@ namespace app\controllers;
 use Yii;
 use app\models\Reservas;
 use app\models\ReservasSearch;
+use app\models\Vuelos;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -20,10 +22,14 @@ class ReservasController extends Controller
     public function behaviors()
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create', 'view'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];
@@ -53,6 +59,7 @@ class ReservasController extends Controller
      */
     public function actionView($id)
     {
+
         return $this->render('view', [
             'usuario_id' => Yii::$app->user->id,
             'model' => $this->findModel($id),
@@ -64,17 +71,21 @@ class ReservasController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($vuelo_id)
     {
-        $model = new Reservas();
+        // $this->comprobarVueloDisponible($vuelo_id);
+        $model = new Reservas([
+            'usuario_id' => Yii::$app->user->id,
+            'vuelo_id' => $vuelo_id,
+        ]);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
-            'usuario_id' => Yii::$app->user->id,
             'model' => $model,
+            'asientosLibres' => $model->vuelo->asientosLibres,
         ]);
     }
 
@@ -126,5 +137,25 @@ class ReservasController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    protected function comprobarVueloDisponible($vuelo_id)
+    {
+        $vuelo = Vuelos::findOne($vuelo_id);
+
+        if ($vuelo === null) {
+            Yii::$app->session->setFlash('error', 'El vuelo no existe.');
+            return $this->redirect(['vuelos/index']);
+        }
+
+        if (new \DateTime($vuelo->salida) <= new \DateTime()) {
+            Yii::$app->session->setFlash('error', 'El vuelo ya ha salido.');
+            return $this->redirect(['vuelos/index']);
+        }
+
+        if ($vuelo->restantes <= 0) {
+            Yii::$app->session->setFlash('error', 'El vuelo no tiene plazas libres.');
+            return $this->redirect(['vuelos/index']);
+        }
     }
 }

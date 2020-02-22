@@ -40,7 +40,7 @@ class ReservasSearch extends Reservas
      */
     public function search($params)
     {
-        $query = Reservas::find()->innerJoinWith('vuelo v');
+        $query = Reservas::find()->JoinWith('vuelo v');
 
         // add conditions that should always apply here
 

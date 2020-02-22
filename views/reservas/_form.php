@@ -10,13 +10,9 @@ use yii\widgets\ActiveForm;
 
 <div class="reservas-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['options' => ['class' => 'form-inline']]); ?>
 
-    <?= $form->field($model, 'usuario_id')->textInput() ?>
-
-    <?= $form->field($model, 'vuelo_id')->textInput() ?>
-
-    <?= $form->field($model, 'asiento')->textInput() ?>
+    <?= $form->field($model, 'asiento')->dropDownList($asientosLibres) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

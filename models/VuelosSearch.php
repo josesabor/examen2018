@@ -42,7 +42,7 @@ class VuelosSearch extends Vuelos
      */
     public function search($params)
     {
-        $query = Vuelos::find()->where('salida > localtimestamp');
+        $query = Vuelos::find2()->where('salida > localtimestamp');
 
         // add conditions that should always apply here
 

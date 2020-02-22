@@ -131,7 +131,7 @@ class Vuelos extends \yii\db\ActiveRecord
         return $this->_restantes;
     }
 
-    public static function find()
+    public function find2()
     {
         return parent::find()
             ->select([
@@ -140,5 +140,13 @@ class Vuelos extends \yii\db\ActiveRecord
             ])
             ->joinWith(['reservas r'])
             ->groupBy('vuelos.id');
+    }
+
+    public function getAsientosLibres()
+    {
+        $ocupados = $this->getReservas()->select('asiento')->column();
+        $total = range(1, $this->plazas);
+        $libres = array_diff($total, $ocupados);
+        return array_combine($libres, $libres);
     }
 }

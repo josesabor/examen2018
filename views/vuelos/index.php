@@ -20,6 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php // echo $this->render('_search', ['model' => $searchModel]);
     ?>
+    <?php Yii::trace($dataProvider->getModels()) ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -36,7 +37,18 @@ $this->params['breadcrumbs'][] = $this->title;
             'plazas',
             'restantes',
             'precio',
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{reservar}',
+                'buttons' => [
+                    'reservar' => function ($url, $model, $key) {
+                        return Html::a('Reservar', [
+                            'reservas/create',
+                            'vuelo_id' => $model->id
+                        ], ['class' => 'btn-sm btn-success']);
+                    },
+                ],
+            ],
         ],
     ]); ?>
 
