@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             'asiento',
-            'created_at',
+            'created_at:datetime',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
